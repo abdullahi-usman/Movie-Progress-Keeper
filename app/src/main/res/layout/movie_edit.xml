@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardElevation="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:focusable="auto"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/movie_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="casual"
+                android:hint="Movie Name"
+                android:textSize="30sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/seasons_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/dancing_script"
+            android:text="Seasons"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/seasons_picker"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+
+        <TextView
+            android:id="@+id/episodes_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/dancing_script"
+            android:text="Episodes"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/episodes_picker"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/seasons_text" />
+
+        <me.angrybyte.numberpicker.view.ActualNumberPicker
+            android:id="@+id/seasons_picker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            app:bar_color="@android:color/black"
+            app:bar_width="1dp"
+            app:bars_count="4"
+            app:controls_color="@android:color/white"
+            app:draw_over_text="true"
+            app:fast_controls_color="@android:color/darker_gray"
+            app:highlight_color="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/seasons_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/seasons_text"
+            app:max_value="999"
+            app:min_value="1"
+            app:selection_color="#A0FF3040"
+            app:show_bars="false"
+            app:show_controls="true"
+            app:show_fast_controls="false"
+            app:show_highlight="true"
+            app:show_text="true"
+            app:text_color="@android:color/black"
+            app:text_size="16sp"
+            app:value="1" />
+
+        <me.angrybyte.numberpicker.view.ActualNumberPicker
+            android:id="@+id/episodes_picker"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="32dp"
+            app:bar_color="@android:color/black"
+            app:bar_width="1dp"
+            app:bars_count="4"
+            app:controls_color="@android:color/white"
+            app:draw_over_controls="true"
+            app:draw_over_text="false"
+            app:fast_controls_color="@android:color/darker_gray"
+            app:highlight_color="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/episodes_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/episodes_text"
+            app:max_value="999"
+            app:min_value="1"
+            app:selection_color="#A0FF3040"
+            app:show_bars="false"
+            app:show_controls="true"
+            app:show_fast_controls="false"
+            app:show_highlight="true"
+            app:show_text="true"
+            app:text_color="@android:color/black"
+            app:text_size="16sp"
+            app:value="1" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="44dp"
+            android:background="@color/cardview_dark_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/episodes_text" />
+
+        <Button
+            android:id="@+id/save_button"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="SAVE"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider"
+            app:layout_constraintVertical_bias="0.055" />
+
+        <Button
+            android:id="@+id/cancel_button"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CANCEL"
+            app:layout_constraintBottom_toBottomOf="@+id/save_button"
+            app:layout_constraintEnd_toStartOf="@+id/save_button"
+            app:layout_constraintHorizontal_bias="0.876"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/save_button"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
