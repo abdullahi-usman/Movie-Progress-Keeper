@@ -7,4 +7,15 @@
         android:orderInCategory="100"
         android:title="About"
         app:showAsAction="never" />
+
+    <item android:id="@+id/sync"
+        android:orderInCategory="200"
+        android:title="Sync"
+        android:checkable="true"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/start_sync"
+        android:orderInCategory="300"
+        android:title="Sync Now"
+        app:showAsAction="never" />
 </menu>
