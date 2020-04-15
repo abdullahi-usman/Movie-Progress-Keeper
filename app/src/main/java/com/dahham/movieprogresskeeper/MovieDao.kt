@@ -3,16 +3,16 @@ package com.dahham.movieprogresskeeper
 import androidx.lifecycle.LiveData
 import androidx.room.*
 @Dao
-interface MovieDao{
+interface MovieDao {
     @Query("SELECT * FROM movie")
     fun getAll(): LiveData<List<Movie>>
 
     @Insert
-    fun put(movie: Movie)
+    fun put(vararg movie: Movie)
 
     @Delete
-    fun delete(movie: Movie)
+    fun delete(vararg movie: Movie)
 
     @Update
-    fun update(movie: Movie)
+    fun update(vararg movie: Movie)
 }
