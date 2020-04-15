@@ -30,7 +30,7 @@ data class Movie(@PrimaryKey(autoGenerate = true) val id: Int = 0,  var name: St
     override fun equals(other: Any?): Boolean {
         if (!(other is Movie))return false
 
-        return name == other.name && season == other.season && episode == other.episode
+        return name == other.name
     }
 
     override fun hashCode(): Int {
