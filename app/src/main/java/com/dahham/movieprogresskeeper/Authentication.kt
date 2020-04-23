@@ -1,6 +1,7 @@
 package com.dahham.movieprogresskeeper
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -31,7 +32,7 @@ class Authentication {
     public fun getIntent(activity: Activity): Intent {
 
         val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
-                requestEmail().build()
+                requestEmail().requestId().build()
 
         return GoogleSignIn.getClient(activity, googleSignInOptions).signInIntent
     }
