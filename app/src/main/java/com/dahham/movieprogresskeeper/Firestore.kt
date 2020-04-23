@@ -12,7 +12,7 @@ class Firestore private constructor(val id: String) {
     private lateinit var firebaseFirestore: FirebaseFirestore
 
 
-    suspend fun syncDatabase(movies:  MutableList<Movie>, callback: ((movies: MutableList<Movie>) -> Unit)?) {
+    suspend fun syncDatabase(movies:  MutableList<Movie>, callback: ((updated_movies: MutableList<Movie>, new_movies: MutableList<Movie>) -> Unit)?) {
 
         withContext(Dispatchers.IO) {
 
@@ -21,10 +21,12 @@ class Firestore private constructor(val id: String) {
             firebaseFirestoreDocument.get().addOnCompleteListener { task ->
 
 
+                val newMovies =  mutableListOf<Movie>()
                 if (task.result != null && task.result?.data != null && task.result?.data?.isEmpty() != true) {
 
                     val result = task.result
                     val data = result?.data?.getValue("records") as? List<HashMap<String, Any>>
+
 
                     for (_movie in data!!){
                         val movie = Movie(name = _movie["name"].toString(), season = (_movie["season"] as Number).toInt(), episode = (_movie["episode"] as Number).toInt())
@@ -36,16 +38,15 @@ class Firestore private constructor(val id: String) {
                                 _m.episode = movie.episode
                             }
                         } else {
-                            movies.add(movie)
+                            newMovies.add(movie)
                         }
                     }
 
 
                 }
-                firebaseFirestoreDocument.set(mapOf(Pair("records", movies)))
+                firebaseFirestoreDocument.set(mapOf(Pair("records", mutableListOf<Movie>(*movies.toTypedArray(), *newMovies.toTypedArray()))))
 
-
-                callback?.invoke(movies)
+                callback?.invoke(movies, newMovies)
 
             }
         }

@@ -123,9 +123,10 @@ class MainActivity : AppCompatActivity() {
             val movies = database.getAllMovies().toMutableList()
 
             firestore?.syncDatabase(movies){
-                for (movie in it){
-                    database.update(movie)
-                }
+                old, new ->
+                database.update(*old.toTypedArray())
+                database.put(*new.toTypedArray())
+
             }
 
         }
