@@ -29,9 +29,6 @@ class MovieListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        view.findViewById<Button>(R.id.button_first).setOnClickListener {
-//            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-//        }
         movies_list.layoutManager = LinearLayoutManager(context)
 
         MovieDatabase.database(context!!).getAll().observe(this.viewLifecycleOwner,  Observer {
