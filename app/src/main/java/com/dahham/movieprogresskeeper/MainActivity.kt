@@ -1,5 +1,6 @@
 package com.dahham.movieprogresskeeper
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -119,14 +120,18 @@ class MainActivity : AppCompatActivity() {
         val database = MovieDatabase.database(this)
         firestore = Firestore.getInstance(userId)
 
+        val progressDialog = ProgressDialog.show(this, "Syncing", "Please Wait", true,true);
+        progressDialog.show()
         val job = GlobalScope.launch {
             val movies = database.getAllMovies().toMutableList()
+
 
             firestore?.syncDatabase(movies){
                 old, new ->
                 database.update(*old.toTypedArray())
                 database.put(*new.toTypedArray())
 
+                progressDialog.dismiss()
             }
 
         }
