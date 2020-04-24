@@ -53,7 +53,9 @@ class MovieEditDialog : DialogFragment() {
             movie?.episode = episode
 
             if (movie != null){
-                MovieDatabase.database(it.context).update(movie)
+                val database = MovieDatabase.database(it.context)
+                database.update(movie)
+                updateCloudDatabase(database, context!!);
             }else {
                 try {
                     MovieDatabase.database(it.context).put(Movie(name = movieNmae, season = seasons, episode = episode))
