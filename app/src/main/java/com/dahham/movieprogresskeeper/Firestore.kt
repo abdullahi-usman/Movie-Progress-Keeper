@@ -4,20 +4,23 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.lang.reflect.TypeVariable
 
 class Firestore private constructor(val id: String) {
 
-    private lateinit var firebaseFirestore: FirebaseFirestore
+    private var firebaseFirestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val firebaseFirestoreCollections = firebaseFirestore.collection("users")
+    private val firebaseFirestoreDocument = firebaseFirestoreCollections.document(id)
 
 
     suspend fun syncDatabase(movies:  MutableList<Movie>, callback: ((updated_movies: MutableList<Movie>, new_movies: MutableList<Movie>) -> Unit)?) {
 
         withContext(Dispatchers.IO) {
 
-            val firebaseFirestoreCollections = firebaseFirestore.collection("users")
-            val firebaseFirestoreDocument = firebaseFirestoreCollections.document(id)
+
             firebaseFirestoreDocument.get().addOnCompleteListener { task ->
 
 
@@ -58,10 +61,6 @@ class Firestore private constructor(val id: String) {
         fun getInstance(id: String): Firestore {
             if (firestore == null) {
                 firestore = Firestore(id);
-            }
-
-            if (firestore!!::firebaseFirestore.isInitialized.not()) {
-                firestore!!.firebaseFirestore = FirebaseFirestore.getInstance();
             }
 
             return firestore!!
