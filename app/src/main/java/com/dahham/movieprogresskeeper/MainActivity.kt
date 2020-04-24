@@ -8,14 +8,17 @@ import android.preference.PreferenceManager
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.common.util.Base64Utils
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
-import java.util.ArrayList
+import java.nio.charset.Charset
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+    private var database: MovieDao? = null
     private lateinit var pref: SharedPreferences
     var authentication: Authentication? = null
     var firestore: Firestore? = null
@@ -31,16 +34,15 @@ class MainActivity : AppCompatActivity() {
             dialog.show(supportFragmentManager, null)
         }
 
-        if (authentication == null){
+        if (authentication == null) {
             authentication = Authentication.getInstance();
         }
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
-        if (pref.getBoolean("sync", false) && authentication?.isInitialize() == true){
-            initSync(authentication?.getUser()?.id!!)
-        } else {
-            initAuth()
+        val userId = pref.getString(getString(R.string.userId), null)
+        if (userId != null) {
+            initSync(Base64Utils.decode(userId).toString(Charset.defaultCharset()))
         }
     }
 
@@ -66,8 +68,16 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.sync -> {
-                pref = PreferenceManager.getDefaultSharedPreferences(this)
-                pref?.edit().putBoolean("sync", pref.getBoolean("sync",false).not()).commit()
+                val syncOn =  pref.getBoolean("sync", false)
+                pref.edit().putBoolean("sync", syncOn.not()).commit()
+
+                if (syncOn) {
+                    pref.edit().remove(getString(R.string.userId)).apply()
+                    authentication?.signOut()
+                }else {
+                    initAuth()
+                }
+
                 true
             }
 
@@ -91,15 +101,18 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == RC_SIGN_IN){
-            authentication?.handleIntent(data ?: return){
-                user, errorMessage ->
+        if (requestCode == RC_SIGN_IN) {
+            authentication?.handleIntent(data ?: return) { user, errorMessage ->
 
-                if (errorMessage != null){
+                if (errorMessage != null) {
                     Toast.makeText(this, "Error occurred, try later", Toast.LENGTH_LONG).show()
                     return@handleIntent
                 }
 
+                pref.edit().putString(
+                    getString(R.string.userId),
+                    Base64Utils.encode(user?.id?.toByteArray(Charset.defaultCharset()))
+                ).apply()
                 initSync(user?.id!!)
 
                 return@handleIntent
@@ -107,29 +120,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initAuth(){
+    private fun initAuth() {
 
-        if (authentication?.isInitialize() == false){
+        val userId = pref.getString(getString(R.string.userId), null)
+        if (userId == null) {
             startActivityForResult(authentication?.getIntent(this), RC_SIGN_IN)
             return;
+        } else {
+            initSync(Base64Utils.decode(userId)!!.toString(Charset.defaultCharset()))
         }
 
     }
 
-    private fun initSync(userId: String){
-        val database = MovieDatabase.database(this)
+    private fun initSync(userId: String) {
+        database = MovieDatabase.database(this)
         firestore = Firestore.getInstance(userId)
 
-        val progressDialog = ProgressDialog.show(this, "Syncing", "Please Wait", true,true);
+        val progressDialog = ProgressDialog.show(this, "Syncing", "Please Wait", true, true);
         progressDialog.show()
         val job = GlobalScope.launch {
-            val movies = database.getAllMovies().toMutableList()
+            val movies = database?.getAllMovies()?.toMutableList() ?: return@launch
 
 
-            firestore?.syncDatabase(movies){
-                old, new ->
-                database.update(*old.toTypedArray())
-                database.put(*new.toTypedArray())
+            firestore?.syncDatabase(movies) { old, new ->
+                database?.update(*old.toTypedArray())
+                database?.put(*new.toTypedArray())
 
                 progressDialog.dismiss()
             }
