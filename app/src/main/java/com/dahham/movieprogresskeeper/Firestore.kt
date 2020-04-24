@@ -47,12 +47,17 @@ class Firestore private constructor(val id: String) {
 
 
                 }
-                firebaseFirestoreDocument.set(mapOf(Pair("records", mutableListOf<Movie>(*movies.toTypedArray(), *newMovies.toTypedArray()))))
+                updateDatabase(mutableListOf(*movies.toTypedArray(), *newMovies.toTypedArray()))
+//                firebaseFirestoreDocument.set(mapOf(Pair("records", mutableListOf<Movie>(*movies.toTypedArray(), *newMovies.toTypedArray()))))
 
                 callback?.invoke(movies, newMovies)
 
             }
         }
+    }
+
+    fun updateDatabase(movies: MutableList<Movie>) {
+        firebaseFirestoreDocument.set(mapOf(Pair("records", movies)))
     }
 
     companion object {
