@@ -153,7 +153,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        authentication?.signOut()
+        GlobalScope.launch {
+            firestore?.updateDatabase(database?.getAllMovies()?.toMutableList() ?: return@launch)
+        }
+
         super.onDestroy()
     }
 }
